@@ -4,7 +4,7 @@ const { SECRETKEY } = require("../../../config");
 const user = require("./model");
 
 module.exports = {
-  mutation: {
+  Mutation: {
     async register(
       _,
       { registerInput: { user_name, email, password, confirm_password } },
@@ -15,9 +15,9 @@ module.exports = {
 
       const newUser = new user({
         email,
-        user_name,
+        username: user_name,
         password,
-        created_at: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       });
 
       const res = await newUser.save();
@@ -26,7 +26,7 @@ module.exports = {
         {
           id: res.id,
           email: res.email,
-          user_name: res.user_name,
+          username: res.username,
         },
         SECRETKEY,
         { expiresIn: "24h" }

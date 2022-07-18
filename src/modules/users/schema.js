@@ -5,8 +5,8 @@ module.exports = gql`
     id: ID!
     email: String!
     token: String!
-    user_name: String!
-    created_at: String!
+    username: String!
+    createdAt: String
   }
 
   input RegisterInput {
@@ -15,7 +15,7 @@ module.exports = gql`
     confirm_password: String!
     email: String!
   }
-  type mutation {
+  type Mutation {
     register(registerInput: RegisterInput): User!
   }
 `;
