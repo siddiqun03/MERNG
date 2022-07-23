@@ -1,22 +1,69 @@
-const post = require("./model");
+const { AuthenticationError } = require("apollo-server");
+
+const Post = require("./model");
+const checkAuth = require("../../utils/check.auth");
 
 module.exports = {
   Query: {
     getPosts: async (_, {}) => {
       try {
-        const posts = await post.find();
+        const posts = await Post.find().sort({ created_at: -1 });
         return posts;
       } catch (err) {
         throw new Error(err);
       }
     },
+    async getPost(_, { postId }) {
+      try {
+        const post = await Post.findById(postId);
+        if (!post) {
+          throw new Error("Post not found!");
+        }
+        return post;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
   },
-  Posts: {
+  Post: {
     id: (global) => global.id,
     body: (global) => global.body,
-    created_at: (global) => global.createdAt,
+    created_at: (global) => global.created_at,
     comments: (global) => global.comments,
     likes: (global) => global.likes,
-    user_name: (global) => global.username,
+    username: (global) => global.username,
+  },
+  Mutation: {
+    async createPost(_, { body }, context) {
+      const user = checkAuth(context);
+
+      if (user) {
+        const newPost = new Post({
+          body,
+          user: user.id,
+          username: user.username,
+          created_at: new Date().toISOString(),
+        });
+
+        const post = await newPost.save();
+        return post;
+      } else {
+        throw new Error("Something is wrong!");
+      }
+    },
+    async deletePost(_, { postId }, context) {
+      try {
+        const user = checkAuth(context);
+        const post = await Post.findById(postId);
+        if (user.username === post.username) {
+          await post.delete();
+          return "Post deleted successfully";
+        } else {
+          throw new AuthenticationError("Action not allowed");
+        }
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
   },
 };

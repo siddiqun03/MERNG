@@ -62,9 +62,7 @@ module.exports = {
         throw new UserInputError("Errors", { errors });
       }
       password = await hash(password, 12);
-      console.log(username);
       const user = await User.findOne({ username });
-      console.log(user);
       if (user) {
         throw new UserInputError("Username is taken", {
           errors: {
@@ -77,7 +75,7 @@ module.exports = {
         email,
         username: username,
         password,
-        createdAt: new Date().toISOString(),
+        created_at: new Date().toISOString(),
       });
 
       const res = await newUser.save();

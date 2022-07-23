@@ -4,6 +4,7 @@ const modules = require("./modules");
 const mongoDB = require("../config");
 const server = new ApolloServer({
   modules,
+  context: ({ req }) => ({ req }),
 });
 
 mongoose
