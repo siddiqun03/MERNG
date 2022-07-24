@@ -19,9 +19,9 @@
   },
   "homepage": "https://github.com/siddiqun03/MERNG#readme",
   "dependencies": {
-    "apollo-server": "^3.10.0",
+    "graphql": "^15.0.0",
+    "apollo-server": "^2.5.0",
     "bcrypt": "^5.0.1",
-    "graphql": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.4.4"
   }

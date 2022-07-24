@@ -27,11 +27,13 @@ module.exports = {
   },
   Post: {
     id: (global) => global.id,
+    username: (global) => global.username,
     body: (global) => global.body,
-    created_at: (global) => global.created_at,
     comments: (global) => global.comments,
     likes: (global) => global.likes,
-    username: (global) => global.username,
+    created_at: (global) => global.created_at,
+    likeCount: (global) => global.likes.length,
+    commentCount: (global) => global.comments.length,
   },
   Mutation: {
     async createPost(_, { body }, context) {
@@ -46,6 +48,11 @@ module.exports = {
         });
 
         const post = await newPost.save();
+
+        context.pubSub.publish("NEW_POST", {
+          newPost: post,
+        });
+
         return post;
       } else {
         throw new Error("Something is wrong!");
